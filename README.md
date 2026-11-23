@@ -1,32 +1,69 @@
-# Secure Connect and Communication Platform
+## CipherNest – Secure Connect & Communication Platform
 
-**Course:** Web Dev III | **Lab 4** | Unit 4
+**Course:** Web Development III | **Lab:** 4 | **Unit:** 4
 
-A secure Node.js backend with signup/login, JWT authentication, protected routes, a Notes API, role-based access control (RBAC), real-time chat with Socket.IO, and event-driven features using `EventEmitter`.
+## Project Overview
 
-## Tech Stack
+CipherNest is a secure backend application developed using Node.js and Express.js. It provides user authentication, protected resources, role-based authorization, personal note management, and real-time messaging.
 
-- Node.js, Express.js
-- MongoDB (mongoose)
-- jsonwebtoken (JWT), bcrypt
-- dotenv
-- Socket.IO
+The application uses JWT-based authentication to secure API requests and Socket.IO to support real-time communication between connected users.
 
-## Features
+## Technologies Used
 
-- Signup and login with bcrypt password hashing
-- JWT authentication (token via `Authorization: Bearer` header or cookie)
-- Protected routes with a reusable auth middleware
-- Secure Notes API (CRUD, each user sees only their own notes)
-- RBAC: admin-only route `GET /api/admin/users`
-- Real-time chat rooms with JWT-authenticated Socket.IO connections
-- Event-driven logging with Node.js `EventEmitter`
+- Node.js – Backend runtime environment
+- Express.js – REST API development
+- MongoDB – Database
+- Mongoose – Database object modeling
+- JWT – User authentication
+- bcrypt – Password encryption and verification
+- Socket.IO – Real-time communication
+- EventEmitter – Event-driven logging
+- dotenv – Environment configuration
 
-## Folder Structure
+## Key Functionalities
 
-```
-Secure_connect_platform/
-├── middleware/auth.js
+### 1. User Authentication
+- New user registration.
+- Secure password hashing using bcrypt.
+- Login with email and password.
+- JWT generation after successful authentication.
+
+### 2. Authentication Middleware
+- Validates JWT tokens.
+- Protects restricted API endpoints.
+- Supports token-based authorization through the Authorization header.
+
+### 3. Personal Notes Management
+- Create new notes.
+- Retrieve saved notes.
+- View individual notes.
+- Update existing notes.
+- Delete notes.
+- Restricts users to accessing their own notes.
+
+### 4. Role-Based Access Control
+- Supports different user roles.
+- Restricts administrative functionality.
+- Provides an admin-only endpoint to retrieve registered users.
+
+### 5. Real-Time Communication
+- Implemented using Socket.IO.
+- Allows clients to join chat rooms.
+- Supports sending and receiving messages.
+- Provides system notifications when users join rooms.
+- Authenticates socket connections using JWT.
+
+### 6. Event-Driven Logging
+- Uses Node.js EventEmitter.
+- Handles application events.
+- Records relevant authentication and communication activities.
+
+## Project Structure
+
+```text
+CipherNest/
+├── middleware/
+│   └── auth.js
 ├── models/
 │   ├── Note.js
 │   └── User.js
@@ -42,82 +79,129 @@ Secure_connect_platform/
 └── socket.js
 ```
 
-## Setup
+## Installation and Configuration
+
+### Step 1: Clone the Repository
 
 ```bash
-git clone <your-repo-link>
-cd Secure_connect_platform
+git clone <your-github-repository-url>
+cd CipherNest
+```
+
+### Step 2: Install Dependencies
+
+```bash
 npm install
 ```
 
-Create a `.env` file (see `.env.example`):
+### Step 3: Configure Environment Variables
 
-```
+Create a `.env` file in the root directory.
+
+```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/secure_connect
 JWT_SECRET=your_long_random_secret
 JWT_EXPIRES_IN=1h
 ```
 
-Start MongoDB, then run:
+### Step 4: Start MongoDB
+
+Make sure your MongoDB server is running.
+
+### Step 5: Run the Application
 
 ```bash
 npm start
 ```
 
-## API Endpoints
+## API Documentation
 
-| Method | Endpoint | Auth | Description |
+| Method | Endpoint | Access | Function |
 |---|---|---|---|
-| POST | `/api/auth/signup` | No | Register a new user |
-| POST | `/api/auth/login` | No | Login and receive a JWT |
-| POST | `/api/notes` | Yes | Create a note |
-| GET | `/api/notes` | Yes | List notes of the logged-in user |
-| GET | `/api/notes/:id` | Yes | Get one note |
-| PUT | `/api/notes/:id` | Yes | Update a note |
-| DELETE | `/api/notes/:id` | Yes | Delete a note |
-| GET | `/api/admin/users` | Admin only | List all users |
+| POST | `/api/auth/signup` | Public | Register user |
+| POST | `/api/auth/login` | Public | Authenticate user |
+| POST | `/api/notes` | Protected | Create a note |
+| GET | `/api/notes` | Protected | Retrieve user notes |
+| GET | `/api/notes/:id` | Protected | Retrieve a specific note |
+| PUT | `/api/notes/:id` | Protected | Modify a note |
+| DELETE | `/api/notes/:id` | Protected | Remove a note |
+| GET | `/api/admin/users` | Admin | Retrieve all users |
 
-## Socket.IO Events
+## Socket.IO Communication
 
-| Event | Direction | Description |
+The application uses the following socket events:
+
+| Event | Direction | Purpose |
 |---|---|---|
-| `joinRoom` | client → server | Join a chat room (default `general`) |
-| `chatMessage` | both | Send a message / receive a broadcast |
-| `systemMessage` | server → client | Join notifications |
+| `joinRoom` | Client → Server | Connect to a chat room |
+| `chatMessage` | Both | Exchange chat messages |
+| `systemMessage` | Server → Client | Display room notifications |
 
-Sockets are authenticated with the same JWT (`auth: { token }`).
+Socket authentication uses the JWT token:
 
-## Output Screenshots
+```javascript
+auth: {
+  token: "YOUR_JWT_TOKEN"
+}
+```
 
-### Fig 1. Signup and login responses
+## API Testing and Screenshots
 
-**Signup (201 Created)**
+All REST API endpoints should be tested using Postman.
 
-![Signup](screenshots/fig1a_signup.png)
+The following screenshots demonstrate the application functionality:
 
-**Login (200 OK, JWT returned)**
+### 1. Authentication Testing
+- User registration response.
+- Successful login response with JWT.
 
-![Login](screenshots/fig1b_login.png)
+### 2. Protected API Testing
+- Access attempt without authentication.
+- Successful note creation.
+- Retrieval of saved notes.
 
-### Fig 2. Notes API: blocked without a token, accessible with a valid JWT
+### 3. Real-Time Communication
+- Socket.IO connection.
+- Chat room activity.
+- Server-side communication logs.
 
-**Without token (403 Forbidden)**
+**Screenshots Directory:**
 
-![Notes without token](screenshots/fig2a_notes_no_token_403.png)
+```text
+screenshots/
+├── signup.png
+├── login.png
+├── unauthorized.png
+├── create-note.png
+├── get-notes.png
+└── chat-activity.png
+```
 
-**Create note with token (201 Created)**
+*Replace these with your actual Postman and server screenshots.*
 
-![Create note](screenshots/fig2b_post_note1.png)
+## Learning Outcomes
 
-**Get notes with token (200 OK)**
+Through this practical assignment, the following concepts are demonstrated:
 
-![Get notes](screenshots/fig2d_get_notes_200.png)
+1. REST API development using Express.js.
+2. Authentication and authorization using JWT.
+3. Secure password handling using bcrypt.
+4. Middleware implementation.
+5. MongoDB database integration.
+6. Role-Based Access Control (RBAC).
+7. Real-time communication using Socket.IO.
+8. Event-driven programming using EventEmitter.
+9. API validation and testing through Postman.
 
-### Fig 3. Real-time chat activity logged via Socket.IO
+## Conclusion
 
-![Chat server log](screenshots/fig3_chat_server_log.png)
+CipherNest demonstrates the development of a secure and modular backend application. It combines authentication, authorization, database operations, and real-time communication into one platform.
 
-## Concepts Covered
+This project provides practical exposure to backend development concepts and secure API design using the Node.js ecosystem.
 
-Authentication, Authorization, JWT, bcrypt, Protected Routes, RBAC, dotenv, WebSockets, Socket.IO, EventEmitter, Real-Time Communication
+---
+
+**Project:** CipherNest  
+**Course:** Web Development III  
+**Lab Assignment:** 4
